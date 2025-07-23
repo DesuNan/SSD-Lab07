@@ -4,6 +4,8 @@ import assert from 'assert';
 // Get the argument (default to 'local' if not provided)
 const environment = process.argv[2] || 'local';
 
+const isWindows = process.platform === 'win32';
+
 // URLs based on environment
 // Obtain dev selenium server IP using: docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' selenium-server
 const seleniumUrl = environment === 'github' 
@@ -13,8 +15,9 @@ const seleniumUrl = environment === 'github'
 // Note: Start the nodejs server before running the test locally
 const serverUrl = environment === 'github' 
   ? 'http://testserver:3000' 
+  : isWindows
+  ? 'http://host.docker.internal:3000'
   : 'http://localhost:3000';
-
 console.log(`Running tests in '${environment}' environment`);
 console.log(`Selenium URL: ${seleniumUrl}`);
 console.log(`Server URL: ${serverUrl}`);
